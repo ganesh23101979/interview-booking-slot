@@ -24,7 +24,7 @@ const server = http.createServer(app);
 // =========================================
 const FRONTEND_ORIGINS = [
   "http://localhost:5173",
-  process.env.FRONTEND_URL || "https://your-frontend.onrender.com"
+  process.env.FRONTEND_URL || "https://interview-booking-slot-frontend-o0vjqt82f.vercel.app/"
 ];
 
 export const io = new Server(server, {
