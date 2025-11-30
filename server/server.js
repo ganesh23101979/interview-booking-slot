@@ -16,39 +16,52 @@ import { Server } from "socket.io";
 dotenv.config();
 const app = express();
 
-const FRONTEND_ORIGINS = [
-  "http://localhost:5173"
-];
+// ===============================
+// FRONTEND ORIGIN HANDLING
+// ===============================
+const FRONTEND_ORIGINS = process.env.FRONTEND_ORIGINS
+  ? process.env.FRONTEND_ORIGINS.split(",").map(o => o.trim())
+  : ["http://localhost:5173"];
+
+console.log("Allowed CORS Origins:", FRONTEND_ORIGINS);
 
 const server = http.createServer(app);
 
-// WebSocket
+// ===============================
+// SOCKET.IO
+// ===============================
 export const io = new Server(server, {
   cors: {
     origin: FRONTEND_ORIGINS,
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     credentials: true,
   }
 });
 
-// CORS for API
+// ===============================
+// MIDDLEWARE
+// ===============================
 app.use(
   cors({
     origin: FRONTEND_ORIGINS,
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     credentials: true,
   })
 );
 
-// JSON Parser
+// JSON Body parser
 app.use(express.json());
 
-// Routes
+// ===============================
+// ROUTES
+// ===============================
 app.use('/api/auth', authRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/admin', adminRoutes);
 
-// Socket.io connections
+// ===============================
+// SOCKET.IO Connections
+// ===============================
 io.on("connection", (socket) => {
   console.log("Client connected:", socket.id);
 
@@ -57,11 +70,14 @@ io.on("connection", (socket) => {
   });
 });
 
-// Notify function
+// Socket emit helper
 export function notifyStudentApproved(studentId) {
   io.emit("student-approved", { studentId });
 }
 
+// ===============================
+// START SERVER
+// ===============================
 const PORT = process.env.PORT || 8080;
 
 async function seedAdmin() {
@@ -88,7 +104,7 @@ async function seedAdmin() {
         updatedAt: new Date(),
       });
 
-      console.log("Admin created (bypassed validation)");
+      console.log("Admin created successfully");
     }
   } catch (err) {
     console.error("Admin seed error", err);
