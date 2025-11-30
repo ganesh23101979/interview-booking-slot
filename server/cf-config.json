@@ -39,25 +39,29 @@
   },
   "DefaultCacheBehavior": {
     "TargetOriginId": "EB-Backend-Origin",
-    "TrustedSigners": {
-      "Enabled": false,
-      "Quantity": 0
-    },
-    "TrustedKeyGroups": {
-      "Enabled": false,
-      "Quantity": 0
-    },
     "ViewerProtocolPolicy": "redirect-to-https",
     "AllowedMethods": {
       "Quantity": 7,
-      "Items": ["HEAD", "DELETE", "POST", "GET", "OPTIONS", "PUT", "PATCH"],
+      "Items": [
+        "HEAD",
+        "DELETE",
+        "POST",
+        "GET",
+        "OPTIONS",
+        "PUT",
+        "PATCH"
+      ],
       "CachedMethods": {
         "Quantity": 2,
         "Items": ["HEAD", "GET"]
       }
     },
-    "SmoothStreaming": false,
     "Compress": true,
+
+    "CachePolicyId": "4135ea2d-6df8-44a3-9df3-4b5a84be39ad",
+    "OriginRequestPolicyId": "50da1d24-e9a7-405a-9a1f-8e8cc6ef0fd9",
+
+    "SmoothStreaming": false,
     "LambdaFunctionAssociations": {
       "Quantity": 0
     },
@@ -65,7 +69,6 @@
       "Quantity": 0
     },
     "FieldLevelEncryptionId": "",
-    "CachePolicyId": "658327ea-f89d-4fab-a63d-7e88639e58f6",
     "GrpcConfig": {
       "Enabled": false
     }
