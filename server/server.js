@@ -16,17 +16,13 @@ import { Server } from "socket.io";
 dotenv.config();
 const app = express();
 
-// Create HTTP Server + WebSocket server
-const server = http.createServer(app);
-
-// =========================================
-//            CORS SETUP (IMPORTANT)
-// =========================================
 const FRONTEND_ORIGINS = [
-  "http://localhost:5173",
-  process.env.FRONTEND_URL || "https://interview-booking-slot-frontend-o0vjqt82f.vercel.app/"
+  "http://localhost:5173"
 ];
 
+const server = http.createServer(app);
+
+// WebSocket
 export const io = new Server(server, {
   cors: {
     origin: FRONTEND_ORIGINS,
@@ -35,21 +31,24 @@ export const io = new Server(server, {
   }
 });
 
-app.use(cors({
-  origin: FRONTEND_ORIGINS,
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true,
-}));
+// CORS for API
+app.use(
+  cors({
+    origin: FRONTEND_ORIGINS,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
 
 // JSON Parser
 app.use(express.json());
 
-// routes
+// Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/admin', adminRoutes);
 
-// WebSocket connection
+// Socket.io connections
 io.on("connection", (socket) => {
   console.log("Client connected:", socket.id);
 
@@ -58,12 +57,12 @@ io.on("connection", (socket) => {
   });
 });
 
-// Admin approval event broadcaster
+// Notify function
 export function notifyStudentApproved(studentId) {
   io.emit("student-approved", { studentId });
 }
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8080;
 
 async function seedAdmin() {
   try {

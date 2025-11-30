@@ -373,6 +373,11 @@ export default function BookInterview() {
           </select>
         )}
 
+        {/* ALWAYS SHOW SIMPLE NOTE */}
+        <div className="text-red-500 text-sm mb-4">
+          * Adjust your slot and desk based on Managerial and HR round.
+        </div>
+
         {/* Company */}
         <label>Company Type</label>
         <select

@@ -1,7 +1,7 @@
+// client/src/pages/AdminStudents.jsx
 import React, { useEffect, useState } from "react";
 import API from "../services/api";
 import { socket } from "../socket";
-
 
 /* ---------------------------- Reusable Neon Modal ---------------------------- */
 function NeonModal({ show, message, yesText, noText, onAction }) {
@@ -66,20 +66,19 @@ export default function AdminStudents() {
     }
   }
 
-  // FIRST LOAD — REQUIRED
-useEffect(() => {
-  loadStudents();
-}, []);
+  // FIRST LOAD
+  useEffect(() => {
+    loadStudents();
+  }, []);
 
-// SOCKET LISTENER
-useEffect(() => {
-  socket.on("student-verified", () => {
-    loadStudents();   // auto refresh admin dashboard
-  });
+  // SOCKET LISTENER
+  useEffect(() => {
+    socket.on("student-verified", () => {
+      loadStudents(); // auto refresh
+    });
 
-  return () => socket.off("student-verified");
-}, []);
-
+    return () => socket.off("student-verified");
+  }, []);
 
   /* SEARCH LOGIC */
   useEffect(() => {
@@ -90,7 +89,8 @@ useEffect(() => {
         (st) =>
           st.name.toLowerCase().includes(s) ||
           st.employee_id?.toLowerCase().includes(s) ||
-          st.course?.toLowerCase().includes(s)
+          st.course?.toLowerCase().includes(s) ||
+          st.phone?.toLowerCase().includes(s) /* Added phone search */
       )
     );
 
@@ -126,6 +126,7 @@ useEffect(() => {
 
   return (
     <>
+      {/* MODAL */}
       <NeonModal
         show={modal.show}
         message={
@@ -144,7 +145,7 @@ useEffect(() => {
         {/* SEARCH BAR */}
         <input
           type="text"
-          placeholder="Search by name, employee ID or course..."
+          placeholder="Search by name, employee ID, course or phone..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="w-full p-2 mb-4 bg-slate-800 border border-slate-600 rounded text-white"
@@ -162,6 +163,10 @@ useEffect(() => {
                   <th className="p-3">Student Name</th>
                   <th className="p-3">Employee ID</th>
                   <th className="p-3">Course</th>
+
+                  {/* ⭐ NEW PHONE COLUMN */}
+                  <th className="p-3">Phone</th>
+
                   <th className="p-3">Status</th>
                   <th className="p-3 text-center">Actions</th>
                 </tr>
@@ -184,6 +189,9 @@ useEffect(() => {
                     </td>
 
                     <td className="p-3">{s.course || "-"}</td>
+
+                    {/* ⭐ SHOW PHONE NUMBER */}
+                    <td className="p-3">{s.phone || "-"}</td>
 
                     <td className="p-3">
                       <span
@@ -231,7 +239,7 @@ useEffect(() => {
 
                 {filtered.length === 0 && (
                   <tr>
-                    <td colSpan="6" className="text-center p-4 text-slate-400">
+                    <td colSpan="7" className="text-center p-4 text-slate-400">
                       No matching students found.
                     </td>
                   </tr>
@@ -277,7 +285,6 @@ useEffect(() => {
       <style>{`
         @keyframes fadeIn { 0%{opacity:0} 100%{opacity:1} }
         @keyframes scaleIn { 0%{transform:scale(.7);opacity:0;} 100%{transform:scale(1);opacity:1;} }
-
         .animate-fadeIn { animation: fadeIn .25s ease-out }
         .animate-scaleIn { animation: scaleIn .25s ease-out }
       `}</style>

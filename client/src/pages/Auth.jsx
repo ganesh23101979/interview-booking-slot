@@ -254,7 +254,7 @@ export default function Auth() {
 
             <FloatingInput
               id="password"
-              label="New Password"
+              label={mode === "login" ? "Password" : "Create Password"}
               type="password"
               value={form.password}
               onChange={(e) => update("password", e.target.value)}
