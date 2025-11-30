@@ -1,0 +1,47 @@
+{
+  "CallerReference": "interview-backend-003",
+  "Comment": "HTTPS for Backend API via CloudFront",
+  "Enabled": true,
+  "Origins": {
+    "Quantity": 1,
+    "Items": [
+      {
+        "Id": "EC2Origin",
+        "DomainName": "ec2-3-111-37-2.ap-south-1.compute.amazonaws.com",
+        "OriginPath": "",
+        "CustomOriginConfig": {
+          "HTTPPort": 8080,
+          "HTTPSPort": 443,
+          "OriginProtocolPolicy": "http-only",
+          "OriginSslProtocols": {
+            "Quantity": 1,
+            "Items": ["TLSv1.2"]
+          }
+        }
+      }
+    ]
+  },
+  "DefaultCacheBehavior": {
+    "TargetOriginId": "EC2Origin",
+    "ViewerProtocolPolicy": "redirect-to-https",
+    "AllowedMethods": {
+      "Quantity": 7,
+      "Items": ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"]
+    },
+    "ForwardedValues": {
+      "QueryString": true,
+      "Cookies": { "Forward": "all" },
+      "Headers": {
+        "Quantity": 4,
+        "Items": ["Origin", "Authorization", "Content-Type", "Accept"]
+      }
+    },
+    "MinTTL": 0,
+    "DefaultTTL": 0,
+    "MaxTTL": 0
+  },
+  "PriceClass": "PriceClass_All",
+  "ViewerCertificate": {
+    "CloudFrontDefaultCertificate": true
+  }
+}
