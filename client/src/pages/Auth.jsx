@@ -100,10 +100,10 @@ export default function Auth() {
       return false;
     }
 
-    if (!/^[A-Za-z ]+$/.test(form.course)) {
+    /*if (!/^[A-Za-z ]+$/.test(form.course)) {
       setError("Course must contain only letters.");
       return false;
-    }
+    }*/
 
     return true;
   };
